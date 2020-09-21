@@ -27,8 +27,14 @@ class DeliveryDetailViewController: UIViewController {
     let labelToTitle = CommonBigUILabel()
     let labelToContent = CommonBigUILabel()
     
+    let labelSenderTitle = CommonBigUILabel()
+    let labelNameContent = CommonMediumUILabel()
+    let labelPhoneContent = CommonMediumUILabel()
+    let labelEmailContent = CommonMediumUILabel()
+    
     let containerFeeView = ShadowUIView()
     
+    let labelDateContent = CommonMediumUILabel()
     let labelFeeTitle = CommonMediumUILabel()
     let labelFeeContent = CommonMediumUILabel()
     let labelSurchargeTitle = CommonMediumUILabel()
@@ -49,6 +55,23 @@ class DeliveryDetailViewController: UIViewController {
         if imageViewPhoto.image == nil {
             imageViewPhoto.image = UIImage(named: Constants.ICON_NO_IMAGE)
         }
+        
+        labelNameContent.text = data?.sender?.name
+        labelPhoneContent.text = data?.sender?.phone
+        labelEmailContent.text = data?.sender?.email
+        
+        labelDateContent.text = data?.pickupTime
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+
+        let date = formatter.date(from: data?.pickupTime ?? "")
+        
+        formatter.dateFormat = "dd-MMM-yyyy HH:mm:ss"
+        if let date = date {
+            let dateString = formatter.string(from: date)
+            labelDateContent.text = dateString
+        }
+        
         labelFromContent.text = data?.route?.start
         labelToContent.text = data?.route?.end
         
@@ -61,7 +84,6 @@ class DeliveryDetailViewController: UIViewController {
             
         labelTotalFeeContent.text = String(format: "$%.2f", totalFee)
         
-        
         buttonLike.addTarget(self, action: #selector(tappedLikeBtn), for: .touchUpInside)
         if (UserDefaults.standard.stringArray(forKey: data?.id ?? "-") != nil) {
             buttonLike.setImage(UIImage(named: Constants.ICON_LIKE), for: UIControl.State.normal)
@@ -71,6 +93,7 @@ class DeliveryDetailViewController: UIViewController {
         
         labelFromTitle.text = "From : "
         labelToTitle.text = "To : "
+        labelSenderTitle.text = "SENDER"
         labelFeeTitle.text = "Delivery Fee"
         labelSurchargeTitle.text = "Surcharge"
         labelTotalFeeTitle.text = "Total Delivery Fee"
@@ -88,6 +111,11 @@ class DeliveryDetailViewController: UIViewController {
         containerHeaderView.addSubview(labelToTitle)
         containerHeaderView.addSubview(labelToContent)
         
+        containerFeeView.addSubview(labelSenderTitle)
+        containerFeeView.addSubview(labelNameContent)
+        containerFeeView.addSubview(labelPhoneContent)
+        containerFeeView.addSubview(labelEmailContent)
+        containerFeeView.addSubview(labelDateContent)
         containerFeeView.addSubview(labelFeeTitle)
         containerFeeView.addSubview(labelFeeContent)
         containerFeeView.addSubview(labelSurchargeTitle)
@@ -109,27 +137,27 @@ class DeliveryDetailViewController: UIViewController {
         imageViewPhoto.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
         imageViewPhoto.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
         imageViewPhoto.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
-        imageViewPhoto.heightAnchor.constraint(equalToConstant: 250).isActive = true
+        imageViewPhoto.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
-        containerHeaderView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 220).isActive = true
+        containerHeaderView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 180).isActive = true
         containerHeaderView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 100).isActive = true
         containerHeaderView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 10).isActive = true
-        containerHeaderView.heightAnchor.constraint(equalToConstant: 90).isActive = true
+        containerHeaderView.heightAnchor.constraint(equalToConstant: 86).isActive = true
         
         // Constraint for from and to
-        labelFromTitle.topAnchor.constraint(equalTo: containerHeaderView.topAnchor, constant: 20).isActive = true
+        labelFromTitle.topAnchor.constraint(equalTo: containerHeaderView.topAnchor, constant: 18).isActive = true
         labelFromTitle.leadingAnchor.constraint(equalTo: containerHeaderView.leadingAnchor, constant: 20).isActive = true
         labelFromTitle.widthAnchor.constraint(equalToConstant: 60).isActive = true
         
-        labelFromContent.topAnchor.constraint(equalTo: containerHeaderView.topAnchor, constant: 20).isActive = true
+        labelFromContent.topAnchor.constraint(equalTo: containerHeaderView.topAnchor, constant: 18).isActive = true
         labelFromContent.leadingAnchor.constraint(equalTo: labelFromTitle.leadingAnchor, constant: 60).isActive = true
         labelFromContent.trailingAnchor.constraint(equalTo: containerHeaderView.trailingAnchor, constant: -15).isActive = true
 
-        labelToTitle.topAnchor.constraint(equalTo: containerHeaderView.topAnchor, constant: 50).isActive = true
+        labelToTitle.topAnchor.constraint(equalTo: containerHeaderView.topAnchor, constant: 46).isActive = true
         labelToTitle.leadingAnchor.constraint(equalTo: containerHeaderView.leadingAnchor, constant: 20).isActive = true
         labelToTitle.widthAnchor.constraint(equalToConstant: 60).isActive = true
 
-        labelToContent.topAnchor.constraint(equalTo: containerHeaderView.topAnchor, constant: 50).isActive = true
+        labelToContent.topAnchor.constraint(equalTo: containerHeaderView.topAnchor, constant: 46).isActive = true
         labelToContent.leadingAnchor.constraint(equalTo: labelToTitle.leadingAnchor, constant: 60).isActive = true
         labelToContent.trailingAnchor.constraint(equalTo: containerHeaderView.trailingAnchor, constant: -15).isActive = true
         
@@ -137,9 +165,24 @@ class DeliveryDetailViewController: UIViewController {
         containerFeeView.topAnchor.constraint(equalTo: containerHeaderView.topAnchor, constant: 110).isActive = true
         containerFeeView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
         containerFeeView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
-        containerFeeView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        containerFeeView.heightAnchor.constraint(equalToConstant: 250).isActive = true
         
-        labelFeeTitle.topAnchor.constraint(equalTo: containerFeeView.topAnchor, constant: 10).isActive = true
+        labelDateContent.topAnchor.constraint(equalTo: containerFeeView.topAnchor, constant: 10).isActive = true
+        labelDateContent.trailingAnchor.constraint(equalTo: containerFeeView.trailingAnchor, constant: -10).isActive = true
+        
+        labelSenderTitle.topAnchor.constraint(equalTo: containerFeeView.topAnchor, constant: 40).isActive = true
+        labelSenderTitle.leadingAnchor.constraint(equalTo: containerFeeView.leadingAnchor, constant: 10).isActive = true
+        
+        labelNameContent.topAnchor.constraint(equalTo: labelSenderTitle.topAnchor, constant: 25).isActive = true
+        labelNameContent.leadingAnchor.constraint(equalTo:labelSenderTitle.leadingAnchor).isActive = true
+        
+        labelPhoneContent.topAnchor.constraint(equalTo: labelNameContent.topAnchor, constant: 20).isActive = true
+        labelPhoneContent.leadingAnchor.constraint(equalTo: labelSenderTitle.leadingAnchor).isActive = true
+
+        labelEmailContent.topAnchor.constraint(equalTo: labelPhoneContent.topAnchor, constant: 20).isActive = true
+        labelEmailContent.leadingAnchor.constraint(equalTo: labelSenderTitle.leadingAnchor).isActive = true
+        
+        labelFeeTitle.topAnchor.constraint(equalTo: labelEmailContent.topAnchor, constant: 60).isActive = true
         labelFeeTitle.leadingAnchor.constraint(equalTo: containerFeeView.leadingAnchor, constant: 10).isActive = true
         
         labelFeeContent.topAnchor.constraint(equalTo: labelFeeTitle.topAnchor).isActive = true

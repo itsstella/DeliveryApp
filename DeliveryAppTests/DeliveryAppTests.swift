@@ -11,16 +11,36 @@ import XCTest
 
 class DeliveryAppTests: XCTestCase {
 
-    var viewController:DeliveryListViewController!
+    var deliveryList: DeliveryListViewController!
+    var deliveryDetail: DeliveryDetailViewController!
+    var deliveryCell: DeliveryListTableViewCell!
+    
+    let myDelegate = DeliveryViewModelProtocolMock()
     
     override func setUpWithError() throws {
-        viewController = DeliveryListViewController()
-        viewController.loadView()
-        viewController.setupCustomNavigationView()
-        viewController.setupTableView()
-        viewController.setupBottomView()
-        viewController.showLoadingIndicator()
-        viewController.fetchDeliveryData()
+        super.setUp()
+
+        deliveryList = DeliveryListViewController()
+        deliveryList.loadView()
+        deliveryList.setupCustomNavigationView()
+        deliveryList.setupBottomView()
+        deliveryList.showLoadingIndicator()
+        
+        deliveryDetail = DeliveryDetailViewController()
+        deliveryDetail.viewDidLoad()
+        deliveryDetail.setupView()
+        deliveryDetail.setConstraint()
+        deliveryDetail.setupCustomNavigationView()
+        
+        deliveryCell = DeliveryListTableViewCell()
+        deliveryCell.initCell()
+        deliveryCell.setCellConstraint()
+        
+        myDelegate.showRetryBtn()
+        myDelegate.hideRetryBtn()
+        XCTAssertTrue(myDelegate.didShowBtn)
+        XCTAssertTrue(myDelegate.didHideBtn)
+        
     }
 
     override func tearDownWithError() throws {
@@ -38,5 +58,4 @@ class DeliveryAppTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-
 }
