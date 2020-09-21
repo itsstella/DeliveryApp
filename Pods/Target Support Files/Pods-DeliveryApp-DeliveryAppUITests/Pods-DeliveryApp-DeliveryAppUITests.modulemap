@@ -1,0 +1,6 @@
+module Pods_DeliveryApp_DeliveryAppUITests {
+  umbrella header "Pods-DeliveryApp-DeliveryAppUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
